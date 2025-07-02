@@ -60,7 +60,7 @@ Feel free to fork the repository, submit a pull request, or open an issue!
 
 ## 📬 Contact
 
-For questions or collaboration: **[your-email@example.com]**
+For questions or collaboration: **[shivanshu985@gmail.com]**
 
 ---
 
