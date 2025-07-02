@@ -48,7 +48,6 @@ You can collect your own from:
 - [Hugging Face Datasets](https://huggingface.co/datasets)
 
 Trained models are available in the [`models/`](models) directory.  
-Check `model.txt` (if provided) for download links.
 
 ---
 
