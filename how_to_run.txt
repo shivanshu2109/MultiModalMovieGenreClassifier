@@ -1,0 +1,120 @@
+===============================================
+Multi-Modal Movie Genre Classifier
+===============================================
+
+This project classifies movie genres using both movie posters and plot summaries
+via a multimodal deep learning model combining vision and NLP.
+
+--------------------------------------------------
+🚀 HOW TO RUN THIS PROJECT LOCALLY
+--------------------------------------------------
+
+Follow these steps to run the app or train the model:
+
+--------------------------------------------------
+1. CLONE THE REPOSITORY
+--------------------------------------------------
+git clone https://github.com/your-username/Multi-Modal-Movie-Genre-Classification.git
+cd Multi-Modal-Movie-Genre-Classification
+
+--------------------------------------------------
+2. SET UP THE ENVIRONMENT
+--------------------------------------------------
+Make sure Python 3.8 or higher is installed.
+
+(Optional but recommended) Create a virtual environment:
+
+- For macOS/Linux:
+    python3 -m venv venv
+    source venv/bin/activate
+
+- For Windows:
+    python -m venv venv
+    venv\Scripts\activate
+
+Install dependencies:
+    pip install -r requirements.txt
+
+If requirements.txt is not available:
+    pip install torch torchvision transformers flask scikit-learn pandas
+
+--------------------------------------------------
+3. PREPARE THE DATASET (Optional - for training)
+--------------------------------------------------
+To prepare the multimodal CSV pipeline:
+
+    Run: code/multimodal_csv_pipeline.py
+
+This script formats the movie poster + summary dataset for model training.
+
+--------------------------------------------------
+4. TRAIN THE MODEL (Optional)
+--------------------------------------------------
+Once the dataset is ready, train the multimodal fusion model:
+
+    Run: code/train_fusion.py
+
+Trained models will be saved inside:
+    models/
+
+--------------------------------------------------
+5. RUN THE WEB APPLICATION
+--------------------------------------------------
+To start the Flask web server:
+
+    Run: app.py
+
+Then open your browser and go to:
+    http://127.0.0.1:5000/
+
+You’ll be able to:
+- Upload a movie poster image
+- OR enter a plot summary
+- Get real-time genre predictions!
+
+--------------------------------------------------
+📁 FILE STRUCTURE (IMPORTANT FILES)
+--------------------------------------------------
+
+- app.py
+    → Main Flask web application
+
+- code/multimodal_csv_pipeline.py
+    → Preprocess and generate dataset for training
+
+- code/train_fusion.py
+    → Train the multimodal fusion model
+
+- models/
+    → Contains trained model files (.pth)
+
+- templates/
+    → Web interface HTML templates
+
+- static/  (optional)
+    → Static files like CSS/images if used
+
+--------------------------------------------------
+6. TESTING AND EXAMPLES
+--------------------------------------------------
+You can download sample movie posters and plot summaries from:
+- Kaggle
+- IMDb
+- TMDb
+- OMDb API
+- Hugging Face Datasets
+
+Use them to evaluate the model predictions.
+
+--------------------------------------------------
+💡 PRO TIPS
+--------------------------------------------------
+- Always run code/multimodal_csv_pipeline.py before training to ensure the dataset is fresh.
+- Modify app.py to load your specific .pth model file from the models/ folder.
+- The trained model is not included here due to storage constraints or licensing.
+  However, check model.txt (if present) for a download link.
+
+--------------------------------------------------
+
+Thank you for checking out this project!
+Questions or suggestions? Feel free to open an issue or submit a pull request. 🎬🍿
