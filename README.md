@@ -19,7 +19,8 @@ A deep learning system that classifies movie genres by fusing both **visual feat
 - [`code/multimodal_csv_pipeline.py`](code/multimodal_csv_pipeline.py) — preprocesses and formats dataset  
 - [`code/train_fusion.py`](code/train_fusion.py) — trains the multimodal fusion model  
 - [`models/`](models/) — saved `.pth` model checkpoints  
-- [`templates/`](templates/) — HTML templates for the UI
+- [`templates/`](templates/) — HTML templates for the UI  
+- [`how_to_run.txt`](how_to_run.txt) — detailed setup and run instructions  
 
 ---
 
@@ -29,35 +30,38 @@ A deep learning system that classifies movie genres by fusing both **visual feat
 
 1. **Clone & install dependencies**
 2. **(Optional)** Run `code/multimodal_csv_pipeline.py` to prepare your dataset  
-3. **(Optional)** Train model via `code/train_fusion.py`  
+3. **(Optional)** Train the model using `code/train_fusion.py`  
 4. Run `app.py` and open `http://127.0.0.1:5000/` in your browser  
-5. Upload a poster or input a plot summary for genre prediction
-## Gor to this file for better understanding - how_to_run.txt
+5. Upload a poster or input a plot summary to get genre predictions  
+
+👉 For full setup instructions, refer to [`how_to_run.txt`](how_to_run.txt)
+
 ---
 
 ## 📦 Dataset & Model Access
 
-Due to licensing, datasets are not included.  
-You may use:
+Due to licensing restrictions, datasets are not included.  
+You can collect your own from:
 - [Kaggle](https://www.kaggle.com/)
 - [IMDb](https://www.imdb.com/)
 - [TMDb](https://www.themoviedb.org/)
-- [Hugging Face](https://huggingface.co/datasets)
+- [Hugging Face Datasets](https://huggingface.co/datasets)
 
-The trained model is available in the [`models/`](models) folder. Check `model.txt` for download links if applicable.
+Trained models are available in the [`models/`](models) directory.  
+Check `model.txt` (if provided) for download links.
 
 ---
 
 ## 🤝 Contributions
 
 Have an idea or improvement?  
-Feel free to fork, submit a PR, or open an issue!
+Feel free to fork the repository, submit a pull request, or open an issue!
 
 ---
 
 ## 📬 Contact
 
-For queries or collaboration: **[your-email@example.com]**
+For questions or collaboration: **[your-email@example.com]**
 
 ---
 
