@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the futuristic Multimodal Movie Genre Classification, merging posters and synopses with deep learning.">
+    <title>Multimodal Movie Genre Classification</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <style>
+        :root {
+            --bg-gradient-start: #0a0a1a;
+            --bg-gradient-end: #1a1a2e;
+            --accent-color: #7dd3fc;
+            --secondary-color: #a5b4fc;
+            --card-bg: rgba(45, 45, 55, 0.9);
+            --border-color: #3a3a50;
+        }
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: #e0e7ff;
+            margin: 0;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: clamp(0.75rem, 2vw, 1rem);
+        }
+        .nav-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: clamp(0.5rem, 1vw, 1rem) 0;
+        }
+        .nav-link {
+            position: relative;
+            padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 2vw, 1.5rem);
+            font-weight: 500;
+            font-size: clamp(0.75rem, 1.5vw, 1rem);
+            color: #a5b4fc;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease, left 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: clamp(1rem, 2vw, 2rem) clamp(1.25rem, 2.5vw, 2.5rem);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+            will-change: transform, box-shadow;
+        }
+        .section-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #2a0047, #00b4d8);
+            animation: gradientFlow 8s ease infinite;
+            padding: clamp(2rem, 4vw, 4rem) clamp(1rem, 2vw, 2rem);
+            text-align: center;
+        }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .section-header {
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            font-weight: 700;
+            color: #a5b4fc;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+            will-change: transform, color;
+        }
+        .section-header.highlighted {
+            transform: scale(1.05);
+            color: #c4b5fd;
+            text-shadow: 0 0 8px rgba(125, 211, 252, 0.5);
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            img { border-radius: 0.75rem; }
+        }
+        img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+        }
+        input, textarea {
+            background: #2d2d3a;
+            border: 1px solid #4b5563;
+            border-radius: 0.375rem;
+            padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem);
+            color: #e0e7ff;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.2);
+            outline: none;
+        }
+        button {
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            color: var(--bg-gradient-start);
+            font-weight: 600;
+            padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+            border-radius: 0.375rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            transition: transform 0.3s ease, background 0.3s ease;
+            will-change: transform;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(125, 211, 252, 0.7), 0 0 20px rgba(165, 180, 252, 0.5);
+        }
+        .file-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        #clear-image {
+            position: absolute;
+            right: clamp(0.5rem, 1vw, 0.75rem);
+            background: #374151;
+            color: #e0e7ff;
+            padding: clamp(0.25rem, 0.5vw, 0.375rem) clamp(0.5rem, 1vw, 0.75rem);
+            border-radius: 0.25rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        #clear-image:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+        #poster-preview {
+            transition: opacity 0.2s ease;
+        }
+        #poster-preview.hidden {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-gradient">
+        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold glow-text mb-2">Multimodal Movie Genre Classification</h1>
+        <p class="text-xs sm:text-sm md:text-base lg:text-lg text-cyan-200">Unleashing Visuals and Text with Deep Learning</p>
+    </header>
+    <nav class="nav-sticky">
+        <ul class="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 items-center px-2">
+            <li><a href="#introduction" class="nav-link">Introduction</a></li>
+            <li><a href="#dataset" class="nav-link">Dataset</a></li>
+            <li><a href="#methodology" class="nav-link">Methodology</a></li>
+            <li><a href="#results" class="nav-link">Results</a></li>
+            <li><a href="#reproducibility" class="nav-link">Reproducibility</a></li>
+            <li><a href="#contributions" class="nav-link">Contributions</a></li>
+            <li><a href="#discussion" class="nav-link">Discussion</a></li>
+            <li><a href="#demo" class="nav-link">Demo</a></li>
+        </ul>
+    </nav>
+    <main class="max-w-xs sm:max-w-sm md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+
+        <section id="demo" class="section-card rounded-lg p-4 sm:p-6 md:p-8 mb-6 md:mb-8 fade-in">
+            <h2 class="section-header text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-cyan-400 border-b-2 border-cyan-700 pb-2 mb-4">Demonstration</h2>
+            <p class="text-xs sm:text-sm md:text-base lg:text-lg"><strong>Try It Yourself</strong>:</p>
+            <form action="/predict#demo" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4" onsubmit="return validateForm()">
+                <div>
+                    <label for="poster" class="block font-medium text-gray-200 text-xs sm:text-sm md:text-base lg:text-lg">Upload Poster Image</label>
+                    <div class="file-input-container mt-1">
+                        <input type="file" name="poster" id="poster" accept="image/*" class="p-2 w-full rounded text-xs sm:text-sm md:text-base lg:text-lg text-white border focus:outline-none" />
+                        <button type="button" id="clear-image" class="hidden">Clear</button>
+                    </div>
+                    <img id="poster-preview" class="hidden mt-2 rounded-lg shadow-md max-w-xs" alt="Poster Preview" />
+                </div>
+                <div>
+                    <label for="synopsis" class="block font-medium text-gray-200 text-xs sm:text-sm md:text-base lg:text-lg">Enter Plot Synopsis</label>
+                    <textarea name="synopsis" id="synopsis" rows="4" class="mt-1 p-2 w-full rounded text-xs sm:text-sm md:text-base lg:text-lg text-white border focus:outline-none" placeholder="Enter a brief plot..."></textarea>
+                </div>
+                <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded text-xs sm:text-sm md:text-base lg:text-lg">Predict Genres</button>
+            </form>
+            {% if top3 %}
+            <div class="mt-6 bg-gray-700 p-4 rounded-lg border border-gray-600">
+                <h4 class="text-cyan-300 font-semibold mb-2 text-base sm:text-lg md:text-xl lg:text-2xl">Top 3 Predicted Genres:</h4>
+                <ul class="list-disc pl-5 text-white text-xs sm:text-sm md:text-base lg:text-lg">
+                    {% for genre, prob in top3 %}
+                        <li>{{ genre }} — {{ "%.2f"|format(prob * 100) }}%</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <p class="mt-6 text-xs sm:text-sm md:text-base lg:text-lg text-gray-300">The model predicts movie genres using either the poster, the synopsis, or both. Results show the top 3 highest predicted probabilities.</p>
+        </section>
+        <!-- Updated Introduction section -->
+        <section id="introduction" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Introduction & Objectives</h2>
+          <img src="../uploads/architecture.jpg" alt="Model Architecture">
+          <p class="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
+            <strong>Project Motivation:</strong> In the ever-expanding world of streaming and digital content, accurate genre classification is critical for recommendation engines and content discovery. Traditional single-modality classifiers—relying on either text or image data—often miss nuanced genre cues. By combining plot synopses (text) with movie posters (visual), our multi-modal approach captures both narrative themes and visual aesthetics, leading to more robust predictions.
+          </p>
+          <p class="mt-3 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
+            <strong>Key Objectives:</strong>
+          </p>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <li><strong>Develop and benchmark</strong> three distinct models: text-only, image-only, and a fusion model combining both.</li>
+            <li><strong>Curate a comprehensive dataset</strong> of over 180,000 films with clean plot summaries and high-quality posters.</li>
+            <li><strong>Evaluate using multi-label metrics</strong>—Precision, Recall, and F1-score—to handle overlapping genres.</li>
+            <li><strong>Deploy an interactive web interface</strong> via Flask to demonstrate live predictions, showcasing the top 3 genre probabilities.</li>
+          </ul>
+        </section>
+        <!-- Updated Dataset section -->
+        <section id="dataset" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Dataset Description</h2>
+          <img src="../uploads/genre_dist.jpg" alt="Genre Distribution">
+          <p class="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
+            Our dataset integrates data from three primary sources:
+          </p>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <li><strong>TMDb API:</strong> Provides plot synopses and genre labels for over 500,000 titles.</li>
+            <li><strong>OMDb API:</strong> Supplies poster URLs and additional metadata for cross-validation.</li>
+            <li><strong>IMDb Dataset:</strong> Offers genre taxonomy and unique identifiers to merge records reliably.</li>
+          </ul>
+          <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-4 mb-2">Cleaning & Preparation</h3>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <li>Removed entries with missing or placeholder synopses ('N/A' or blank).</li>
+            <li>Filtered out genres not present in our curated list of 18 target labels.</li>
+            <li>Normalized text by lowercasing, stripping HTML tags, and truncating to 256 tokens.</li>
+            <li>Resized poster images to 224×224 pixels, applied normalization to match ImageNet standards.</li>
+            <li>Split data into 167,626 training samples and 20,395 validation samples, preserving genre distributions via stratified sampling.</li>
+          </ul>
+        </section>
+        <!-- Updated Methodology section -->
+        <section id="methodology" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Methodology</h2>
+          <p class="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
+            We implemented three models using PyTorch and Hugging Face Transformers, each optimized for multi-label classification with binary cross-entropy loss.
+          </p>
+          <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-4 mb-2">1. Text-Only Model</h3>
+          <img src="../uploads/text_graph.jpg" alt="Text-Only Model Graph">
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <li><strong>Encoder:</strong> DistilBERT-base-uncased, fine-tuned for 3 epochs.</li>
+            <li><strong>Architecture:</strong> [CLS] token fed into two dense layers (768 → 384 → 18 outputs).</li>
+            <li><strong>Hyperparameters:</strong> LR=2e-5, batch_size=64, warmup_steps=300, weight_decay=0.01.</li>
+          </ul>
+          <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-4 mb-2">2. Image-Only Model</h3>
+          <img src="../uploads/image_graph.png" alt="ConvNeXT-Tiny Graph">
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <li><strong>Backbone:</strong> ConvNeXt-Tiny pre-trained on ImageNet, fine-tuned for 50 epochs.</li>
+            <li><strong>Augmentations:</strong> Random flips, rotations ±15°, brightness/contrast jitter.</li>
+            <li><strong>Optimizer:</strong> AdamW (LR=1e-4, weight_decay=1e-4), scheduler: CosineAnnealingLR.</li>
+          </ul>
+          <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-4 mb-2">3. Fusion Model</h3>
+          <img src="../uploads/fusion_graph.jpg" alt="Fusion Model Graph">
+          <p class="text-xs sm:text-sm md:text-base lg=text-lg leading-relaxed">
+            Concatenate the 768-dim [CLS] embedding with the 1024-dim ConvNeXt features, forming a 1792-dim vector fed into a two-layer MLP.
+          </p>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md=text-base lg-text-lg">
+            <li><strong>Hidden Layer:</strong> 1792 → 896 neurons, ReLU + Dropout(0.3).</li>
+            <li><strong>Output:</strong> 896 → 18 logits, sigmoid activations.</li>
+            <li><strong>Training Tricks:</strong> AMP, gradient accumulation (2 steps), early stopping (patience=3).</li>
+          </ul>
+        </section>
+        <!-- Updated Results & Evaluation section -->
+        <section id="results" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Results & Evaluation</h2>
+          <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-4 mb-2">Text-Only Model Metrics</h3>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm-text-sm md-text-base lg-text-lg">
+            <li><strong>Eval Loss:</strong> 0.105352</li>
+            <li><strong>F1 Micro:</strong> 0.552562</li>
+            <li><strong>Precision Micro:</strong> 0.798647</li>
+            <li><strong>Recall Micro:</strong> 0.422407</li>
+          </ul>
+          <h3 class="text-base sm-text-lg md-text-xl lg-text-2xl font-semibold text-indigo-300 mt-4 mb-2">Image-Only Model Metrics</h3>
+          <ul class="list-disc pl-4 sm-pl-5 space-y-2 text-xs sm-text-sm md-text-base lg-text-lg">
+            <li><strong>Precision:</strong> 0.047</li>
+            <li><strong>Recall:</strong> 0.020</li>
+            <li><strong>F1 Score:</strong> 0.028</li>
+          </ul>
+          <h3 class="text-base sm-text-lg md-text-xl lg=text-2xl font-semibold text-indigo-300 mt-4 mb-2">Fusion Model Metrics</h3>
+          <ul class="list-disc pl-4 sm-pl-5 space-y-2 text-xs sm-text-sm md-text-base lg-text-lg">
+            <li><strong>Train Loss:</strong> 0.1258</li>
+            <li><strong>Val Loss:</strong> 0.1011</li>
+            <li><strong>F1 Micro:</strong> 0.5501</li>
+            <li><strong>Precision Micro:</strong> 0.8223</li>
+            <li><strong>Recall Micro:</strong> 0.4132</li>
+          </ul>
+          <h3 class="text-base sm-text-lg md-text-xl lg-text-2xl font-semibold text-indigo-300 mt-4 mb-2">Error Analysis</h3>
+          <p class="text-xs sm-text-sm md-text-base lg=text-lg leading-relaxed">
+            Fusion excels on common genres (Thriller, Crime) but underperforms on rare labels due to imbalance. Image-only high precision/low recall shows visuals alone lack full context.
+          </p>
+          <img src="../uploads/efficinetnet.jpg" alt="EfficientNet Evaluation Graph">
+          <img src="../uploads/resnet.jpg" alt="ResNet Evaluation Graph">
+        </section>
+        <!-- Updated Reproducibility section -->
+        <section id="reproducibility" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+            <h2 class="section-header">Reproducibility & Instructions</h2>
+            <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-3 sm:mt-4 mb-2">Data Acquisition</h3>
+            <p class="text-xs sm:text-sm md:text-base lg:text-lg">
+                Download poster images from OMDb, TMDb, and IMDb (<a href="https://developer.imdb.com/non-commercial-datasets/" target="_blank" class="text-cyan-400 hover:text-cyan-300">https://developer.imdb.com/non-commercial-datasets/</a>).<br>
+                OMDb will also provide plot summaries for the movies, which will assist in downloading the plot synopses.
+            </p>
+            <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-3 sm:mt-4 mb-2">Preprocessing</h3>
+            <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+                <li>Remove files of translucent images, as well as those with dimensions smaller than 224x224.</li>
+                <li>Delete files that are missing or do not match a genre.</li>
+                <li>Eliminate duplicate posters manually, as many tconst IDs may reference the same file.</li>
+                <li>For underrepresented genres, perform manual web scraping to gather additional data.</li>
+                <li>Adjust for data imbalance using focal loss, which proved highly effective for this dataset.</li>
+            </ul>
+            <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-indigo-300 mt-3 sm:mt-4 mb-2">Training</h3>
+            <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+                <li>Split the dataset into 80% for training and 20% for validation.</li>
+                <li>Use the provided code to train your model effectively.</li>
+            </ul>
+            <p class="text-xs sm:text-sm md:text-base lg:text-lg"><strong>Running</strong>:</p>
+            <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+                <li>Preprocess: <code>python clean_full_dataset.py</code></li>
+                <li>Train: <code>python fusion_training.py --batch-size 16 --epochs 3</code></li>
+                <li>Evaluate: Metrics in <code>logs/metrics.csv</code></li>
+            </ul>
+            <p class="text-xs sm:text-sm md:text-base lg:text-lg"><strong>Notes</strong>:</p>
+            <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md:text-base lg:text-lg">
+                <li>Use <code>num_workers=0</code> on Windows</li>
+                <li>Clear Hugging Face cache if needed</li>
+            </ul>
+        </section>
+        <!-- Updated Contributions section -->
+        <section id="contributions" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Team Contributions</h2>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-4 text-xs sm:text-sm md-text-base lg-text-lg">
+            <li><strong>Amrit Pandey</strong> – Data/Text Lead: TMDb/OMDb data, cleaning pipeline, DistilBERT fine-tuning.</li>
+            <li><strong>Shivanshu Mishra</strong> – Image/Fusion Lead: ConvNeXt training, feature fusion, end-to-end evaluation.</li>
+          </ul>
+        </section>
+        <!-- Updated Discussion section -->
+        <section id="discussion" class="section-card mb-6 sm:mb-8 md:mb-10 lg:mb-12 fade-in">
+          <h2 class="section-header">Discussion & Future Work</h2>
+          <h3 class="text-base sm:text-lg md-text-xl lg-text-2xl font-semibold text-indigo-300 mt-4 mb-2">Insights</h3>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md-text-base lg:text-lg">
+            <li>Fusion improves F1 by ~5% over text-only, showing modality complementarity.</li>
+            <li>Image-only precision high but recall low, highlighting limited semantic context.</li>
+            <li>AMP & gradient accumulation enabled efficient single-GPU training.</li>
+          </ul>
+          <h3 class="text-base sm:text-lg md-text-xl lg-text-2xl font-semibold text-indigo-300 mt-4 mb-2">Future Directions</h3>
+          <ul class="list-disc pl-4 sm:pl-5 space-y-2 text-xs sm:text-sm md-text-base lg:text-lg">
+            <li>Implement attention-based or CLIP fusion mechanisms.</li>
+            <li>Include audio and subtitle modalities for richer context.</li>
+            <li>Deploy a live, user-upload demo for real-time inference.</li>
+          </ul>
+        </section>
+    </main>
+    <footer class="bg-gradient-to-r from-gray-900 to-gray-800 py-3 sm:py-4 text-center">
+        <p class="text-xs sm:text-sm md:text-base lg:text-lg text-gray-400">Final project BAI submission by Amrit Pandey and Shivanshu Mishra</p>
+    </footer>
+    <script>
+        function easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+        function smoothScroll(target, duration = 800) {
+            const targetElement = document.querySelector(target);
+            if (!targetElement) return;
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (window.innerWidth < 640 ? 60 : 80);
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+            function animation(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = easeInOutQuad(progress);
+                window.scrollTo(0, startPosition + distance * ease);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+            requestAnimationFrame(animation);
+        }
+        document.querySelectorAll('.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                smoothScroll(anchor.getAttribute('href'));
+            });
+        });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if (entry.target.classList.contains('section-header')) {
+                        entry.target.classList.add('highlighted');
+                    }
+                } else if (entry.target.classList.contains('section-header')) {
+                    entry.target.classList.remove('highlighted');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '50px 0px' });
+        document.querySelectorAll('.fade-in, .section-header').forEach(el => observer.observe(el));
+        function validateForm() {
+            const poster = document.getElementById('poster').files;
+            const synopsis = document.getElementById('synopsis').value.trim();
+            if (poster.length === 0 && synopsis === '') {
+                alert('Please provide at least a poster image or a plot synopsis.');
+                return false;
+            }
+            return true;
+        }
+        function clearImage() {
+            const input = document.getElementById('poster');
+            const preview = document.getElementById('poster-preview');
+            const btn = document.getElementById('clear-image');
+            input.value = '';
+            preview.classList.add('hidden');
+            preview.src = '';
+            btn.classList.add('hidden');
+        }
+        document.getElementById('poster').addEventListener('change', e => {
+            const preview = document.getElementById('poster-preview');
+            const btn = document.getElementById('clear-image');
+            if (e.target.files.length > 0) {
+                preview.src = URL.createObjectURL(e.target.files[0]);
+                preview.classList.remove('hidden');
+                btn.classList.remove('hidden');
+            } else {
+                clearImage();
+            }
+        });
+        document.getElementById('clear-image').addEventListener('click', clearImage);
+    </script>
+</html>
